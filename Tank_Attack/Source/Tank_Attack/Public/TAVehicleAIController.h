@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/PlayerController.h"
 #include "AIController.h"
 #include "TAVehicleAIController.generated.h"
 
