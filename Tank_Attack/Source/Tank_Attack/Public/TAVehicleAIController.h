@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "AIController.h"
 #include "TAVehicleAIController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TANK_ATTACK_API ATAVehicleAIController : public APlayerController
+class TANK_ATTACK_API ATAVehicleAIController : public AAIController
 {
 	GENERATED_BODY()
-	
 };
