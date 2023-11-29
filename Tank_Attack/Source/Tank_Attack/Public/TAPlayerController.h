@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "TAVehicleAIController.h"
 #include "TAVehicleBase.h"
+#include "Net/UnrealNetwork.h"
 #include "TAPlayerController.generated.h"
 
 /**

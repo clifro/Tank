@@ -2,7 +2,6 @@
 
 
 #include "TAPlayerController.h"
-#include "Net/UnrealNetwork.h"
 
 ATAPlayerController::ATAPlayerController(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -11,9 +10,9 @@ ATAPlayerController::ATAPlayerController(const FObjectInitializer& ObjectInitial
 
 void ATAPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	//Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ATAPlayerController, Owner);
-	DOREPLIFETIME_CONDITION(ATAPlayerController, VehicleAIController, COND_OwnerOnly);
+	//DOREPLIFETIME_CONDITION(ATAPlayerController, VehicleAIController, COND_OwnerOnly);
 }
 
 void ATAPlayerController::SpawnVehicle()
