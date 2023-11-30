@@ -14,4 +14,8 @@ class TANK_ATTACK_API ATAPlayerState : public APlayerState
 {
 	GENERATED_BODY()
 	
+private:
+	FName PlayerID;
+public:
+	FORCEINLINE void SetPlayerID(FName InPlayerID) { PlayerID = InPlayerID; }
 };

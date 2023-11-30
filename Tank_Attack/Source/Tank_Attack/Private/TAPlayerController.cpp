@@ -12,7 +12,7 @@ void ATAPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 {
 	//Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ATAPlayerController, Owner);
-	//DOREPLIFETIME_CONDITION(ATAPlayerController, VehicleAIController, COND_OwnerOnly);
+	DOREPLIFETIME_CONDITION(ATAPlayerController, VehicleAIController, COND_OwnerOnly);
 }
 
 void ATAPlayerController::SpawnVehicle()
