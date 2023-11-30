@@ -13,6 +13,7 @@ void ATAPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	//Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(ATAPlayerController, Owner);
 	DOREPLIFETIME_CONDITION(ATAPlayerController, VehicleAIController, COND_OwnerOnly);
+	DOREPLIFETIME_CONDITION(ATAPlayerController, Vehicle, COND_OwnerOnly);
 }
 
 void ATAPlayerController::BeginPlay()
@@ -45,10 +46,35 @@ void ATAPlayerController::SpawnVehicle()
 	}
 }
 
+void ATAPlayerController::OnRep_VehicleSpawned(ATAVehicleBase* prevVehicle)
+{
+	if (IsLocalController())
+	{
+		SpawnCamera();
+	}
+}
+
+void ATAPlayerController::SpawnCamera()
+{
+	if (!IsValid(CameraRef))
+	{
+		CameraRef = GetWorld()->SpawnActor<ATACamera>(CameraClass);
+		SetViewTarget(CameraRef);
+	}
+}
+
 void ATAPlayerController::ResetVehicle()
 {
 	if (IsValid(Vehicle))
 	{
 		Vehicle->SetActorLocation(FVector::Zero());
+	}
+}
+
+void ATAPlayerController::Tick(float DeltaTime)
+{
+   	if (IsLocalController() && IsValid(CameraRef) && IsValid(Vehicle))
+	{
+		CameraRef->SetActorLocation(Vehicle->GetActorLocation());
 	}
 }

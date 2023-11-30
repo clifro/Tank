@@ -3,3 +3,7 @@
 
 #include "TAVehicleAIController.h"
 
+void ATAVehicleAIController::OnPossess(APawn* InPawn)
+{
+
+}

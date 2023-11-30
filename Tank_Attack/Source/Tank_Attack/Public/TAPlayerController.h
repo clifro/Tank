@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "TAVehicleAIController.h"
 #include "TAVehicleBase.h"
+#include "TACamera.h"
 #include "Net/UnrealNetwork.h"
 #include "TAPlayerController.generated.h"
 
@@ -29,9 +30,15 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	UClass* VehicleAIControllerClass;
+
+	UPROPERTY(EditDefaultsOnly)
+	UClass* CameraClass;
 	
 	UFUNCTION()
 	void SpawnVehicle();
+
+	UFUNCTION()
+	void SpawnCamera();
 
 	UFUNCTION()
 	void ResetVehicle();
@@ -39,8 +46,15 @@ public:
 	UPROPERTY(Replicated)
 	ATAVehicleAIController* VehicleAIController;
 
-private:
-
 	UPROPERTY()
+	ATACamera* CameraRef;
+
+	UPROPERTY(ReplicatedUsing = OnRep_VehicleSpawned)
 	ATAVehicleBase* Vehicle;
+
+	UFUNCTION()
+	void OnRep_VehicleSpawned(ATAVehicleBase* prevVehicle);
+
+	virtual void Tick(float DeltaTime) override;
+private:
 };
