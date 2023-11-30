@@ -34,7 +34,7 @@ public:
 	UFUNCTION()
 	void ResetVehicle();
 
-	UPROPERTY(replicated)
+	UPROPERTY(Replicated)
 	ATAVehicleAIController* VehicleAIController;
 
 private:
