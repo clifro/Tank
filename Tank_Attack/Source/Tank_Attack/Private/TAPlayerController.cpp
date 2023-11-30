@@ -16,13 +16,35 @@ void ATAPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME_CONDITION(ATAPlayerController, Vehicle, COND_OwnerOnly);
 }
 
-void ATAPlayerController::BeginPlay()
+void ATAPlayerController::SetupInputComponent()
 {
-	Super::BeginPlay();
+	Super::SetupInputComponent();
 
-	if (IsLocalController())
+	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ATAPlayerController::Fire);
+	InputComponent->BindAction("Move", EInputEvent::IE_Pressed, this, &ATAPlayerController::Move);
+}
+
+void ATAPlayerController::Fire()
+{
+
+}
+
+void ATAPlayerController::Move()
+{
+	FHitResult hitResult;
+	GetHitResultUnderCursor(ECollisionChannel::ECC_Visibility, true, hitResult);
+
+	if (hitResult.bBlockingHit)
 	{
-		SetShowMouseCursor(true);
+		Server_SetDestination(hitResult.Location);
+	}
+}
+
+void ATAPlayerController::Server_SetDestination_Implementation(FVector location)
+{
+	if (IsValid(VehicleAIController))
+	{
+		VehicleAIController->SetLocation(location);
 	}
 }
 

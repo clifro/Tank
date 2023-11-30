@@ -7,3 +7,13 @@ void ATAVehicleAIController::OnPossess(APawn* InPawn)
 {
 
 }
+
+void ATAVehicleAIController::Tick(float inDeltaTime)
+{
+	Super::Tick(inDeltaTime);
+
+	if (HasAuthority())
+	{
+		MoveToLocation(Location);
+	}
+}

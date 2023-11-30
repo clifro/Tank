@@ -23,7 +23,11 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
 
-	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
+
+	void Fire();
+
+	void Move();
 
 	UPROPERTY(EditDefaultsOnly)
 	UClass* VehicleClass;
@@ -33,6 +37,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	UClass* CameraClass;
+
+	UFUNCTION(Server, Reliable)
+	void Server_SetDestination(FVector location);
 	
 	UFUNCTION()
 	void SpawnVehicle();
