@@ -3,6 +3,7 @@
 #include "TAGameMode.h"
 #include "TAGameState.h"
 #include "TAPlayerState.h"
+#include "TAPlayerController.h"
 
 void ATAGameMode::PostLogin(APlayerController* NewPlayer)
 {
@@ -13,6 +14,13 @@ void ATAGameMode::PostLogin(APlayerController* NewPlayer)
 	{
 		playerState->SetPlayerID(PlayerNameID);
 		++PlayerID;
+	}
+
+	ATAPlayerController* playerController = Cast<ATAPlayerController>(NewPlayer);
+
+	if (IsValid(playerController))
+	{
+		playerController->SpawnVehicle();
 	}
 
 	ATAGameState* gameState = Cast<ATAGameState>(GameState);

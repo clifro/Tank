@@ -22,6 +22,8 @@ public:
 
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
 
+	virtual void BeginPlay() override;
+
 	UPROPERTY(EditDefaultsOnly)
 	UClass* VehicleClass;
 

@@ -15,6 +15,16 @@ void ATAPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME_CONDITION(ATAPlayerController, VehicleAIController, COND_OwnerOnly);
 }
 
+void ATAPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (IsLocalController())
+	{
+		SetShowMouseCursor(true);
+	}
+}
+
 void ATAPlayerController::SpawnVehicle()
 {
 	if (!IsValid(VehicleAIController))
