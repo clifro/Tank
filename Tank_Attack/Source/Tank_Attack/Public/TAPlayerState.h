@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
+#include "Net/UnrealNetwork.h"
 #include "TAPlayerState.generated.h"
 
 /**
@@ -17,5 +18,12 @@ class TANK_ATTACK_API ATAPlayerState : public APlayerState
 private:
 	FName PlayerID;
 public:
+
+	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
+
+	UPROPERTY(Replicated)
+	int PlayerScore;
+
 	FORCEINLINE void SetPlayerID(FName InPlayerID) { PlayerID = InPlayerID; }
+	FORCEINLINE FName GetPlayerID() { return PlayerID; }
 };

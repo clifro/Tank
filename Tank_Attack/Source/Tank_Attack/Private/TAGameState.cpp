@@ -5,14 +5,13 @@
 
 void ATAGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	//Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(ATAGameState, Owner);
-	DOREPLIFETIME_CONDITION(ATAGameState, PlayerScores, COND_OwnerOnly);
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	DOREPLIFETIME(ATAGameState, PlayerScores);
 }
 
 void ATAGameState::UpdateScore(FName PlayerID)
 {
-	for (FScoreData data : PlayerScores)
+	for (FScoreData& data : PlayerScores)
 	{
 		if (data.PlayerID == PlayerID)
 		{
@@ -24,10 +23,11 @@ void ATAGameState::UpdateScore(FName PlayerID)
 	FScoreData playerData{};
 	playerData.PlayerID = PlayerID;
 	playerData.Score = 0;
+	PlayerScores.Add(playerData);
 }
 
 
 void ATAGameState::OnRep_ScoresUpdated(TArray<FScoreData> prevScores)
 {
-
+	UpdateScoreUI();
 }

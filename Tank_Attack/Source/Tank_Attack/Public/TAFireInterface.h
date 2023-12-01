@@ -23,6 +23,5 @@ class TANK_ATTACK_API ITAFireInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	UFUNCTION()
-	virtual void Fire() = 0;
+	virtual void Fire(AController* OwningController) = 0;
 };

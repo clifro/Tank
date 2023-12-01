@@ -2,6 +2,7 @@
 
 
 #include "TAProjectile.h"
+#include "TAGameMode.h"
 
 // Sets default values
 ATAProjectile::ATAProjectile()
@@ -35,6 +36,18 @@ void ATAProjectile::Tick(float DeltaTime)
 
 void ATAProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT(" COLLIDED "));
+	if (OtherActor != GetInstigator())
+	{
+		APawn* Enemy = Cast<APawn>(OtherActor);
+		
+		ATAGameMode* currentGamemode = Cast<ATAGameMode>(GetWorld()->GetAuthGameMode());
+
+		if (Enemy && currentGamemode)
+		{
+			currentGamemode->OnHit(GetInstigator(), Enemy);
+		}
+
+		Destroy();
+	}
 }
 

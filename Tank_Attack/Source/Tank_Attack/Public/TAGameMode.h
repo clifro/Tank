@@ -20,4 +20,7 @@ private:
 public:
 
 	virtual void PostLogin(APlayerController* NewPlayer) override;
+
+	UFUNCTION()
+	void OnHit(APawn* Source, APawn* Target);
 };

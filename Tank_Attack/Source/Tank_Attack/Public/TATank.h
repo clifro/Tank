@@ -24,6 +24,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	FTransform GetTurretTransform();
 
-	UFUNCTION(BlueprintCallable)
-	virtual void Fire() override;
+	UFUNCTION()
+	virtual void Fire(AController* OwningController) override;
 };

@@ -7,26 +7,49 @@
 
 void ATAGameMode::PostLogin(APlayerController* NewPlayer)
 {
-	ATAPlayerState* playerState = Cast<ATAPlayerState>(NewPlayer->PlayerState);
-	FName PlayerNameID = FName(PlayerName.Append(FString::FromInt(PlayerID)));
+	Super::PostLogin(NewPlayer);
 
-	if (IsValid(playerState))
+	if (HasAuthority())
 	{
-		playerState->SetPlayerID(PlayerNameID);
-		++PlayerID;
-	}
+		ATAPlayerState* playerState = Cast<ATAPlayerState>(NewPlayer->PlayerState);
+		FName PlayerNameID = FName(PlayerName + (FString::FromInt(PlayerID)));
 
-	ATAPlayerController* playerController = Cast<ATAPlayerController>(NewPlayer);
+		if (IsValid(playerState))
+		{
+			playerState->SetPlayerID(PlayerNameID);
+			++PlayerID;
+		}
 
-	if (IsValid(playerController))
-	{
-		playerController->SpawnVehicle();
+		ATAPlayerController* playerController = Cast<ATAPlayerController>(NewPlayer);
+
+		if (IsValid(playerController))
+		{
+			playerController->SpawnVehicle();
+		}
+
+		ATAGameState* gameState = Cast<ATAGameState>(GameState);
+
+		if (IsValid(gameState))
+		{
+			gameState->UpdateScore(PlayerNameID);
+		}
 	}
+}
+
+void ATAGameMode::OnHit(APawn* Source, APawn* Target)
+{
+	ATAVehicleAIController* SourceAIController = Cast<ATAVehicleAIController>(Source->Controller);
+	ATAVehicleAIController* TargetAIController = Cast<ATAVehicleAIController>(Target->Controller);
+	ATAPlayerController* SourcePlayerController = Cast<ATAPlayerController>(SourceAIController->Owner);
+	ATAPlayerController* TargetPlayerController = Cast<ATAPlayerController>(TargetAIController->Owner);
+	ATAPlayerState* SourcePlayerState = Cast<ATAPlayerState>(SourcePlayerController->PlayerState);
 
 	ATAGameState* gameState = Cast<ATAGameState>(GameState);
 
 	if (IsValid(gameState))
 	{
-		gameState->UpdateScore(PlayerNameID);
+		gameState->UpdateScore(SourcePlayerState->GetPlayerID());
 	}
+
+	TargetPlayerController->ResetVehicle();
 }

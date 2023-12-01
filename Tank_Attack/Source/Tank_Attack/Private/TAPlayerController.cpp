@@ -2,11 +2,7 @@
 
 
 #include "TAPlayerController.h"
-
-ATAPlayerController::ATAPlayerController(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
-{
-	bReplicates = true;
-}
+#include "TAFireInterface.h"
 
 void ATAPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
@@ -20,13 +16,21 @@ void ATAPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ATAPlayerController::Fire);
+	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ATAPlayerController::Server_Fire);
 	InputComponent->BindAction("Move", EInputEvent::IE_Pressed, this, &ATAPlayerController::Move);
 }
 
 void ATAPlayerController::Fire()
 {
+	if (IsValid(Vehicle))
+	{
+		ITAFireInterface* FireInterface = Cast<ITAFireInterface>(Vehicle);
 
+		if (FireInterface)
+		{
+			FireInterface->Fire(this);
+		}
+	}
 }
 
 void ATAPlayerController::Move()
@@ -40,6 +44,11 @@ void ATAPlayerController::Move()
 	}
 }
 
+void ATAPlayerController::Server_Fire_Implementation()
+{
+	Fire();
+}
+
 void ATAPlayerController::Server_SetDestination_Implementation(FVector location)
 {
 	if (IsValid(VehicleAIController))
@@ -50,10 +59,7 @@ void ATAPlayerController::Server_SetDestination_Implementation(FVector location)
 
 void ATAPlayerController::SpawnVehicle()
 {
-	if (!IsValid(VehicleAIController))
-	{
-		VehicleAIController = GetWorld()->SpawnActor<ATAVehicleAIController>(VehicleAIControllerClass);
-	}
+	FVector NewLocation = GetRandomLocation();
 
 	if (!IsValid(Vehicle))
 	{
@@ -62,10 +68,30 @@ void ATAPlayerController::SpawnVehicle()
 		spawnParams.Owner = this;
 		spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		FTransform VehicleTransform;
-		VehicleTransform.SetLocation(FVector::Zero());
+		VehicleTransform.SetLocation(NewLocation);
 		Vehicle = GetWorld()->SpawnActor<ATAVehicleBase>(VehicleClass, VehicleTransform, spawnParams);
-		VehicleAIController->Possess(Vehicle);
 	}
+
+	if (!IsValid(VehicleAIController))
+	{
+		FActorSpawnParameters spawnParams;
+		spawnParams.Instigator = nullptr;
+		spawnParams.Owner = this;
+		FTransform VehicleTransform;
+		VehicleTransform.SetLocation(NewLocation);
+		spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		VehicleAIController = GetWorld()->SpawnActor<ATAVehicleAIController>(VehicleAIControllerClass, VehicleTransform, spawnParams);
+	}
+
+	VehicleAIController->SetLocation(NewLocation);
+	VehicleAIController->Possess(Vehicle);
+}
+
+FVector ATAPlayerController::GetRandomLocation()
+{
+	float X_location = FMath::RandRange(25, -1200);
+	float Y_location = FMath::RandRange(-1700, 1700);
+	return FVector(X_location, Y_location, 30);
 }
 
 void ATAPlayerController::OnRep_VehicleSpawned(ATAVehicleBase* prevVehicle)
@@ -89,12 +115,17 @@ void ATAPlayerController::ResetVehicle()
 {
 	if (IsValid(Vehicle))
 	{
-		Vehicle->SetActorLocation(FVector::Zero());
+		FVector NewLocation = GetRandomLocation();
+		VehicleAIController->SetLocation(NewLocation);
+		Vehicle->SetActorLocation(NewLocation);
+		Vehicle->SetActorRotation(FQuat::Identity);
 	}
 }
 
 void ATAPlayerController::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
+
    	if (IsLocalController() && IsValid(CameraRef) && IsValid(Vehicle))
 	{
 		CameraRef->SetActorLocation(Vehicle->GetActorLocation());

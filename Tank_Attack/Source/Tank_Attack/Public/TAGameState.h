@@ -36,4 +36,7 @@ public:
 
 	UFUNCTION()
 	void OnRep_ScoresUpdated(TArray<FScoreData> prevScores);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateScoreUI();
 };

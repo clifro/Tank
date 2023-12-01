@@ -5,11 +5,11 @@
 #include "Engine/World.h"
 
 
-void ATATank::Fire()
+void ATATank::Fire(AController* OwningController)
 {
 	FActorSpawnParameters spawnParams;
 	spawnParams.Instigator = this;
-	spawnParams.Owner = GetController();
+	spawnParams.Owner = OwningController;
 	spawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	ATAProjectile* projectile = GetWorld()->SpawnActor<ATAProjectile>(ProjectileClass, GetTurretTransform(), spawnParams);
 }
